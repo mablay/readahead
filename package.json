@@ -1,0 +1,16 @@
+{
+  "name": "sequential-file-reader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "pta test/*.spec.js",
+    "test:log": "pta test/*.spec.js -r log"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "pta": "^0.1.3"
+  }
+}
