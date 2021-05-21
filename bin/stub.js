@@ -1,0 +1,12 @@
+const { streamParser } = require('..')
+// const fs = require('../test/stub/fs.stub')
+const fs = require('fs')
+const createParser = require('../test/stub/parser.stub')
+
+// const rs = fs.createReadStream('', { end: 1e9 })
+const rs = fs.createReadStream('/Users/marc/data/ros/456000000000000.bag')
+const parser = createParser(1e3)
+rs.pipe(streamParser(parser))
+  .on('data', () => {})
+  .on('end', () => console.log('END'))
+  .on('error', console.error)

@@ -1,7 +1,7 @@
 node_modules
 .DS_Store
 test.dat
-/bin
+# /bin
 trace.pcap
 .vscode
-/test
+# /test
