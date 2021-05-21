@@ -2,25 +2,36 @@ const { Writable, Readable } = require('stream')
 
 const CACHE_SIZE = 16 * 65536
 
-function streamParser () {
+function streamParser ({ cacheSize = CACHE_SIZE } = {}) {
+  // const writableHighWaterMark = Math.ceil(cacheSize / 65536)
   const chunks = []
   let cachedBytes = 0
   let offset = 0
 
   let finished = false
+  let eofSignaled = false
+
+  // Construct the default response once the end
+  // of file or end of stream has been reached.
+  function eofResponse () {
+    if (eofSignaled) throw new Error('Read after end of file has been signaled!')
+    eofSignaled = true
+    return {
+      bytesRead: 0,
+      buffer: Buffer.alloc(0)
+    }
+  }
+
   const nrrs = [] // [{ size, cb }] // reader queue
   const nrqs = [] // [{ resolve, reject }] // writer queue
 
   // called by reader
   function setNextReadRequest (size, cb) {
-    // console.log('setNextReadRequest | nrrs', nrrs.length, 'nrqs', nrqs.length)
     if (nrqs.length) {
-      // writer is already waiting for the read request
-      // console.log('reader dequeues buffer')
+      //writer gets the read request he was waiting for
       nrqs.shift().resolve({ size, cb })
     } else {
       // shelf the request
-      // console.log('reader awaits data from writer')
       nrrs.push({ size, cb })
     }
   }
@@ -28,13 +39,11 @@ function streamParser () {
   // called by writer
   /** @returns Promise<{ size, cb }> */
   function getNextReadRequest () {
-    // console.log('getNextReadRequest | nrrs', nrrs.length, 'nrqs', nrqs.length)
     if (nrrs.length) {
       // directly return the read request
-      // console.log('writer dequeues read request')
       return nrrs.shift()
     }
-    // console.log('writer awaits next read request')
+    // writer has to wait for readers next read request
     return new Promise((resolve, reject) => {
       nrqs.push({ resolve, reject })
     })
@@ -54,7 +63,7 @@ function streamParser () {
 
         const { size, cb } = await getNextReadRequest()
         if (size > cachedBytes) {
-          if (size > CACHE_SIZE) {
+          if (size > cacheSize) {
             throw new Error('Requested bytes exceed cache size!')
           }
           nrrs.unshift({ size, cb })
@@ -86,16 +95,21 @@ function streamParser () {
   sfh.on('finish', () => {
     finished = true
     if (nrrs.length) {
-      nrrs.shift().cb(null, { bytesRead: 0, buffer: Buffer.alloc(0) })
+      // resolve the last read request with an empty response
+      // bytesRead: 0 indicates EOF to the reader
+      nrrs.shift().cb(null, eofResponse())
     }
   })
 
   sfh.hasFinished = () => finished
 
-  sfh.read = async function read (size) {
-    if (finished) throw new Error('Done')
+  sfh.read = function read (size) {
+    if (finished) {
+      return Promise.resolve(eofResponse())
+    }
     return new Promise((resolve, reject) => {
       setNextReadRequest(size, (err, buf) => {
+        // console.log({ cachedBytes, nrrs: nrrs.length, nrqs: nrqs.length })
         if (err) reject(err)
         else resolve(buf)
       })
