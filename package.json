@@ -1,7 +1,7 @@
 {
   "name": "sequential-file-reader",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "turns a stream into a sequential file handler",
   "main": "index.js",
   "scripts": {
     "test": "pta test/*.spec.js",
