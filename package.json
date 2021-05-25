@@ -10,6 +10,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mablay/readahead.git"
+  },
   "devDependencies": {
     "pta": "^0.1.3"
   }
