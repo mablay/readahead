@@ -1,5 +1,6 @@
-# Sequential File Handler
-This is a high performance shim for a strictly sequential file access pattern.
+# Readahead
+A fast way to sequentially and asynchronously access
+buffers of any size from a readable.
 
 If your code looks sth. like this:
 
@@ -12,22 +13,23 @@ let i = 1e6; while (i--) {
   const { buffer, bytesRead } = await fh.read({ position, length })
   if (bytesRead === 0) break
   position += bytesRead // strictly sequential file access
+  console.log(buffer)
   // do sth. with buffer
 }
 ```
 
-`sfh` will speed it up by replacing only the first line:
+`readahead` will speed it up, especially if your average requested buffer size
+is less than 4kb
 
 ```js
-const { open } = require('sfh')
-const fh = await open('file')
-let position = 0
+const readahead = require('readahead')
+const readable = require('fs').createReadStream('file.data')
+const reader = readahead(readable)
 let length = 100
 let i = 1e6; while (i--) {
-  const { buffer, bytesRead } = await fh.read({ position, length })
-  if (bytesRead === 0) break
-  position += bytesRead // strictly sequential file access
-  // do sth. with buffer
+  const { value, done } = await reader.read(length)
+  if (done) break
+  console.log(value) // that's your buffer
 }
 ```
 
@@ -62,6 +64,6 @@ This serves as limit for "how fast it gets with NodeJS".
 
 ```
 fh.read every buffer:             29.86s user 17.48s system 133% cpu 35.405 total
-readStream and SFH parsing:        1.00s user  0.82s system 118% cpu  1.538 total
+readStream and readahead parsing:  1.00s user  0.82s system 118% cpu  1.538 total
 readStream, no parsing:            0.45s user  0.99s system 124% cpu  1.164 total (idle reference)
 ```

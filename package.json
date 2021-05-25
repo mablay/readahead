@@ -1,24 +1,15 @@
 {
   "name": "readahead",
-  "version": "0.1.0",
-  "description": "turns a stream into a sequential file handler",
+  "version": "0.2.0",
+  "description": "A fast way to sequentially and asynchronously access buffers of any size from a readable.",
   "main": "index.js",
   "scripts": {
-    "test": "pta test/*.spec.js",
-    "test:log": "pta test/*.spec.js -r log"
+    "test": "pta test/*.spec.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "babar": "^0.2.0",
-    "ervy": "^1.0.7",
-    "length-prefixed-stream": "^2.0.0",
-    "pcap": "^3.1.0",
-    "pta": "^0.1.3",
-    "zibar": "^1.0.15"
-  },
-  "dependencies": {
-    "it-reader": "^3.0.0"
+    "pta": "^0.1.3"
   }
 }
