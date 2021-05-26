@@ -27,7 +27,7 @@ const readable = require('fs').createReadStream('file.data')
 const reader = readahead(readable)
 let length = 100
 let i = 1e6; while (i--) {
-  const { value, done } = await reader.read(length)
+  const { value, done } = await reader.next(length)
   if (done) break
   console.log(value) // that's your buffer
 }
