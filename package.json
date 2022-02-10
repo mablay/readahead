@@ -3,6 +3,7 @@
   "version": "0.2.3",
   "description": "A fast way to sequentially and asynchronously access buffers of any size from a readable.",
   "main": "index.js",
+  "type": "module",
   "files": [
     "index.js",
     "index.d.ts",
@@ -19,6 +20,6 @@
     "url": "git@github.com:mablay/readahead.git"
   },
   "devDependencies": {
-    "pta": "^0.1.3"
+    "pta": "^1.0.2"
   }
 }

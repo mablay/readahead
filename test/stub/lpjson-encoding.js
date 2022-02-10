@@ -1,4 +1,5 @@
 // --- encoding ---
+import readahead from "../../index.js"
 
 // header only contains payload length as number
 const header = {
@@ -43,8 +44,7 @@ function * lpjGenerator (count = 10) {
 
 // repackages lpj buffers into buffers of fixed size
 // to obfuscate native buffer segmentation.
-async function * lpjSerialiser (count, chunkSize = 65536) {
-  const readahead = require('../..')
+export async function * lpjSerialiser (count, chunkSize = 65536) {
   const source = lpjGenerator(count)
   const reader = readahead(source)
   while (true) {
@@ -62,7 +62,7 @@ async function * lpjSerialiser (count, chunkSize = 65536) {
  * own encoding schema and yield the parsed
  * payload
  */
- async function * lpjParser (reader) {
+export async function * lpjParser (reader) {
   while (true) {
     const head = await reader.next(header.byteLength)
     if (head.done) break
@@ -71,9 +71,4 @@ async function * lpjSerialiser (count, chunkSize = 65536) {
     if (body.done) break
     yield payload.decode(body.value)
   }
-}
-
-module.exports = {
-  lpjSerialiser,
-  lpjParser
 }

@@ -1,8 +1,8 @@
 // Synopsis: 
 // $ node example/lp-json/lp-example.js [count=10] [chunkSize=65536]
 
-const { lpjSerialiser, lpjParser } = require('../test/stub/lpjson-encoding')
-const readahead = require('..')
+const { lpjSerialiser, lpjParser } = require('../test/stub/lpjson-encoding.js')
+const readahead = require('../index.js')
 
 async function main(count, chunkSize) {
   // mock `count` length prefixed json messages

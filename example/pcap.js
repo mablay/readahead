@@ -5,9 +5,10 @@
 // $ npm install pcap
 // $ node example/pcap.js someNetworkTrace.pcap
 
-const fs = require('fs')
-const pcap = require('pcap')
-const readahead = require('..')
+import fs from 'fs'
+
+import pcap from 'pcap'
+import readahead from '../index.js'
 
 const GLOBAL_HEADER_SIZE = 24
 const PACKET_HEADER_SIZE = 16

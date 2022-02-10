@@ -46,10 +46,8 @@ async function * readerGenerator (readable) {
   }
 }
 
-function readahead (readable) {
+export default function readahead (readable) {
   const reader = readerGenerator(readable)
   reader.next()
   return reader
 }
-
-module.exports = readahead
