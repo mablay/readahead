@@ -1,9 +1,12 @@
 {
   "name": "readahead",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A fast way to sequentially and asynchronously access buffers of any size from a readable.",
   "main": "index.js",
-  "files": ["index.js", "README.md"],
+  "files": [
+    "index.js",
+    "README.md"
+  ],
   "scripts": {
     "test": "pta test/*.spec.js"
   },
