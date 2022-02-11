@@ -1,6 +1,6 @@
 {
   "name": "readahead",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A fast way to sequentially and asynchronously access buffers of any size from a readable.",
   "main": "index.js",
   "type": "module",
