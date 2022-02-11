@@ -2,37 +2,28 @@
 A fast way to sequentially and asynchronously access
 buffers of any size from a readable.
 
-If your code looks sth. like this:
-
-```js
-const { open } = require('fs').promises
-const fh = await open('file')
-let position = 0
-let length = 100
-let i = 1e6; while (i--) {
-  const { buffer, bytesRead } = await fh.read({ position, length })
-  if (bytesRead === 0) break
-  position += bytesRead // strictly sequential file access
-  console.log(buffer)
-  // do sth. with buffer
-}
-```
-
 `readahead` will speed it up, especially if your average requested buffer size
 is less than 4kb
 
-```js
-const readahead = require('readahead')
-const readable = require('fs').createReadStream('file.data')
-const reader = readahead(readable)
-let length = 100
-let i = 1e6; while (i--) {
-  const { value, done } = await reader.next(length)
-  if (done) break
-  console.log(value) // that's your buffer
-}
-```
+## Usage
 
+```js
+// const readahead = require('readahead')
+import readahead from 'readahead'
+import { createReadStream } from 'fs'
+
+async function main () {
+  readable = createReadStream('large-file.data')
+  const reader = readahead(readable)
+  let length = 100
+  while (true) {
+    const { value, done } = await reader.next(length)
+    if (done) break
+    console.log(value) // buffer of size <length>
+  }
+}
+main().catch(console.error)
+```
 
 ## Benchmark
 
